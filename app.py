@@ -2,6 +2,7 @@
 import pandas as pd
 import numpy as np
 import re
+nltk.download('stopwords')
 from nltk.corpus import stopwords
 import nltk
 from nltk.stem import WordNetLemmatizer
