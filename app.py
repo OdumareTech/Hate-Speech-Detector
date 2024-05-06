@@ -1,15 +1,16 @@
 # Import the libraries
+import nltk
 import pandas as pd
 import numpy as np
 import re
+import pickle
+import streamlit as st
 nltk.download('stopwords')
 from nltk.corpus import stopwords
-import nltk
 from nltk.stem import WordNetLemmatizer
 from nltk.stem import SnowballStemmer
 from nltk.tokenize import word_tokenize
-import pickle
-import streamlit as st
+
 
 # Define stopwords
 stop_words = set(stopwords.words('english'))  
