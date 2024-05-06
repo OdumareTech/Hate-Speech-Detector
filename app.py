@@ -146,7 +146,7 @@ def main():
         st.success(f"Result: {label_sentiment(predict_sentiment[i])}")
     
     
-    # Add a feedback mechanism
+    # Add a feedback mechanism section
     st.markdown("---")
     if st.button("Have a Feedback?"):
         st.subheader("Feedback")
