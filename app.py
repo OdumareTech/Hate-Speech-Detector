@@ -39,7 +39,7 @@ def replace_urls(text):
 
 
 # Function to clean text
-def clean_text(text):
+def clean_text(text, stop_words):
     # replace url in text
     text = replace_urls(text)
     # Remove punctuation using regular expression
@@ -58,7 +58,7 @@ def clean_text(text):
 def stem_text(text):
 
     # clean text
-    text = clean_text(text)
+    text = clean_text(text, stop_words)
 
     # Tokenize the text
     tokens = word_tokenize(text)
@@ -92,34 +92,68 @@ def label_sentiment(predict_sentiment):
 
 
 def main():
+    st.set_page_config(
+        page_title="Hate Speech Detector",
+        page_icon=":rage:",
+        layout="centered",
+        initial_sidebar_state="collapsed"
+    )
+
+    # Define a dictionary to store the state
+    state = {
+        'user_input': ""
+    }
+
     st.title("Hate Speech Detector Chatbot")
+
+    # Some explanation about the app and the hate speech detection model
+    st.markdown("This app detects whether text inputs contains hate speech or not.")
+
+    # Text input for user to enter message
+    user_input = st.text_area("Enter text here:", value=state['user_input'])
+    state['user_input'] = user_input
+    user_input = user_input.split("\n")
+
 
     # Create two columns 
     
     col1, col2 = st.columns(2)
 
     with col1:
-        st.button("Refresh")
-    
+        # Refresh button to clear the text area
+        refresh_button = st.button("↻ Refresh")
+        if refresh_button:
+            state['user_input'] = ""
+
+    predict_sentiment = []
     with col2:
-        st.button("Help")
+        # Button to send the message
+        if st.button("Detect Hate Speech"):
+            if user_input: 
+                with st.spinner("Detecting..."):
+                # Clean and Vectorize user_input
+                    word_vectorized = vectorize_text(user_input)
+                    
+                    # predict the sentiment of the user_input
+                    predict_sentiment = loaded_adaboost.predict(word_vectorized)
 
-    # Text input for user to enter message
-    user_input = st.text_area("You: ")
-    user_input = user_input.split("\n")
+            else:
+                st.warning("Please enter some text.")
+    
+    # convert the predict from numberic to word
+    for i in range(len(predict_sentiment)):
+        st.success(f"Result: {label_sentiment(predict_sentiment[i])}")
+    
+    
+    # Add a feedback mechanism
+    st.markdown("---")
+    if st.button("Have a Feedback?"):
+        st.subheader("Feedback")
+        feedback = st.text_input("Have feedback or encountered an issue? Let us know!")
+        if st.button("Submit Feedback"):
+            # Handle feedback submission
+            st.success("Thank you for your feedback!") 
 
-    # Button to send the message
-    if st.button("Send"):
-        if user_input:
-            # Clean and Vectorize user_input
-            word_vectorized = vectorize_text(user_input)
-            
-            # predict the sentiment of the user_input
-            predict_sentiment = loaded_adaboost.predict(word_vectorized)
-
-            # convert the predict from numberic to word
-            for i in range(len(predict_sentiment)):
-                st.write(i, label_sentiment(predict_sentiment[i]))
 
            
 if __name__ == "__main__":
