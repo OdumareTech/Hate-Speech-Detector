@@ -5,15 +5,20 @@ import numpy as np
 import re
 import pickle
 import streamlit as st
-nltk.download('stopwords')
-from nltk.corpus import stopwords
+try:
+    nltk.data.find('tokenizers/punkt')
+    nltk.data.find('corpora/stopwords')
+except LookupError:
+    # If not found, download the resources
+    nltk.download(['punkt', 'stopwords'])
 from nltk.stem import WordNetLemmatizer
 from nltk.stem import SnowballStemmer
 from nltk.tokenize import word_tokenize
 
 
 # Define stopwords
-stop_words = set(stopwords.words('english'))  
+# stop_words = set(stopwords.words('english'))  
+stop_words = nltk.corpus.stopwords.words('english')
 
 
 # Initialize SnowballStemmer
