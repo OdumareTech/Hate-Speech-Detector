@@ -5,6 +5,7 @@ import numpy as np
 import re
 import pickle
 import streamlit as st
+from PIL import Image
 try:
     nltk.data.find('tokenizers/punkt')
     nltk.data.find('corpora/stopwords')
@@ -105,6 +106,20 @@ def main():
         layout="centered",
         initial_sidebar_state="collapsed"
     )
+
+    # Load the logo image
+    logo = Image.open("images/logo.jpg")
+
+
+    # Insert the logo and the description 
+    col1, col2 = st.columns([9, 1])
+    with col1:
+        st.image(logo, width=200)  
+        st.markdown("""
+        <div style="display: flex; align-items: center;">
+            <p style="margin: 0; font-size: 10px; align-items: center;">A product from the Research and Development Department</p>
+        </div>
+        """, unsafe_allow_html=True)
 
     # Define a dictionary to store the state
     state = {
