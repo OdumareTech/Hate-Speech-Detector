@@ -2,6 +2,7 @@
 import nltk
 import pandas as pd
 import numpy as np
+from datetime import datetime
 import re
 import pickle
 import streamlit as st
@@ -97,6 +98,23 @@ def label_sentiment(predict_sentiment):
         return "Hate Speech"
     else:
         return "Not Hate Speech"
+    
+
+def save_feedback(feedback):
+    # Prepare the feedback data
+    feedback_data = {
+        "Timestamp": [datetime.now().strftime("%Y-%m-%d %H:%M:%S")],
+        "Feedback": [feedback]
+    }
+    feedback_df = pd.DataFrame(feedback_data)
+
+    # Append the feedback to the CSV file
+    try:
+        previous_feedback = pd.read_csv("feedback/feedback.csv")
+        complete_feedback = pd.concat([previous_feedback, feedback_df], axis=0)
+        complete_feedback.to_csv("feedback/feedback.csv", index=False)
+    except FileNotFoundError:
+        feedback_df.to_csv("feedback/feedback.csv", index=False)
 
 
 def main():
@@ -110,7 +128,6 @@ def main():
     # Load the logo image
     logo = Image.open("images/logo.jpg")
 
-
     # Insert the logo and the description 
     col1, col2 = st.columns([9, 1])
     with col1:
@@ -120,63 +137,165 @@ def main():
             <p style="margin: 0; font-size: 10px; align-items: center;">A product from the Research and Development Department</p>
         </div>
         """, unsafe_allow_html=True)
-
-    # Define a dictionary to store the state
-    state = {
-        'user_input': ""
-    }
-
+    
+    
     st.title("Hate Speech Detector Chatbot")
 
     # Some explanation about the app and the hate speech detection model
     st.markdown("This app detects whether text inputs contains hate speech or not.")
 
     # Text input for user to enter message
-    user_input = st.text_area("Enter text here:", value=state['user_input'])
-    state['user_input'] = user_input
+    if "user_input" not in st.session_state:
+        st.session_state.user_input = ""
+    if "show_feedback" not in st.session_state:
+        st.session_state.show_feedback = False
+    if "about_app" not in st.session_state:
+        st.session_state.about_app = False
+    if "about_us" not in st.session_state:
+        st.session_state.about_us = False
+
+    user_input = st.text_area("Enter text here:", value=st.session_state.user_input)
+    st.session_state.user_input = user_input
     user_input = user_input.split("\n")
 
-
     # Create two columns 
-    
     col1, col2 = st.columns(2)
 
     with col1:
-        # Refresh button to clear the text area
-        refresh_button = st.button("↻ Refresh")
-        if refresh_button:
-            state['user_input'] = ""
+        # Refresh button to clear the text area and hide feedback
+        if st.button("↻ Refresh"):
+            st.session_state.user_input = ""
+            st.session_state.show_feedback = False
+            st.session_state.about_app = False
+            st.session_state.about_us = False
+
 
     predict_sentiment = []
-    with col2:
+    with col2:        
         # Button to send the message
         if st.button("Detect Hate Speech"):
-            if user_input: 
+            try:                
                 with st.spinner("Detecting..."):
-                # Clean and Vectorize user_input
+                    # Clean and Vectorize user_input
                     word_vectorized = vectorize_text(user_input)
                     
-                    # predict the sentiment of the user_input
+                    # Predict the sentiment of the user_input
                     predict_sentiment = loaded_adaboost.predict(word_vectorized)
 
-            else:
+            except:
                 st.warning("Please enter some text.")
     
-    # convert the predict from numberic to word
+    # Convert the prediction from numeric to word
+
     for i in range(len(predict_sentiment)):
         st.success(f"Result: {label_sentiment(predict_sentiment[i])}")
     
-    
     # Add a feedback mechanism section
     st.markdown("---")
-    if st.button("Have a Feedback?"):
+
+    # Create two columns 
+    col1, col2, col3 = st.columns(3)
+    
+    with col1:
+        if st.button("Have a Feedback?"):
+            st.session_state.show_feedback = True
+            st.session_state.about_app = False
+            st.session_state.about_us = False
+
+
+    with col2:
+        if st.button("About the App"):
+            st.session_state.show_feedback = False
+            st.session_state.about_app = True
+            st.session_state.about_us = False
+
+
+    with col3:
+        if st.button("About Us"):
+            st.session_state.show_feedback = False
+            st.session_state.about_app = False
+            st.session_state.about_us = True
+
+
+    if st.session_state.show_feedback:
         st.subheader("Feedback")
         feedback = st.text_input("Have feedback or encountered an issue? Let us know!")
         if st.button("Submit Feedback"):
             # Handle feedback submission
-            st.success("Thank you for your feedback!") 
+            if feedback:
+                save_feedback(feedback)
+                st.success("Thank you for your feedback!")
+            else:
+                st.warning("Please enter your feedback before submitting.")
+
+    if st.session_state.about_app:
+        st.subheader("About Hate Speech Detector")
+        st.markdown("""
+                Lorem Ipsum is simply dummy text of the printing and typesetting industry.
+                Lorem Ipsum has been the industry's standard dummy text ever since the 1500s
+                standard dummy text ever since the 1500s, when an unknown printer took a galley of 
+                type and scrambled it to make a type specimen book. <br> It has survived not only five 
+                centuries, but also the leap into electronic typesetting, remaining essentially unchanged. <br>
+                It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum 
+                passages, <br> and more recently with desktop publishing software like Aldus PageMaker 
+                including versions of Lorem Ipsum.
+                """, unsafe_allow_html=True)
+        
+        st.subheader("Limitations")
+        st.markdown("""
+                Lorem Ipsum is simply dummy text of the printing and typesetting industry.
+                Lorem Ipsum has been the industry's standard dummy text ever since the 1500s
+                standard dummy text ever since the 1500s, when an unknown printer took a galley of 
+                type and scrambled it to make a type specimen book. <br> It has survived not only five 
+                centuries, but also the leap into electronic typesetting, remaining essentially unchanged. <br>
+                It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum 
+                passages, <br> and more recently with desktop publishing software like Aldus PageMaker 
+                including versions of Lorem Ipsum.
+                """, unsafe_allow_html=True)
+        
+        st.subheader("Collaborators")
+        st.markdown("""
+                Name 1 <br>
+                Name 2 <br>
+                Name 3 <br>
+                Name 4 <br>                  
+                
+                """, unsafe_allow_html=True)
+        
+    if st.session_state.about_us:
+        st.subheader("About OdumareTech")
+        st.markdown("""
+                Lorem Ipsum is simply dummy text of the printing and typesetting industry.
+                Lorem Ipsum has been the industry's standard dummy text ever since the 1500s
+                standard dummy text ever since the 1500s, when an unknown printer took a galley of 
+                type and scrambled it to make a type specimen book. <br> It has survived not only five 
+                centuries, but also the leap into electronic typesetting, remaining essentially unchanged. <br>
+                It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum 
+                passages, <br> and more recently with desktop publishing software like Aldus PageMaker 
+                including versions of Lorem Ipsum.
+                """, unsafe_allow_html=True)
+        
+        st.subheader("Our Services")
+        st.markdown("""
+                Lorem Ipsum is simply dummy text of the printing and typesetting industry.
+                Lorem Ipsum has been the industry's standard dummy text ever since the 1500s
+                standard dummy text ever since the 1500s, when an unknown printer took a galley of 
+                type and scrambled it to make a type specimen book. <br> It has survived not only five 
+                centuries, but also the leap into electronic typesetting, remaining essentially unchanged. <br>
+                It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum 
+                passages, <br> and more recently with desktop publishing software like Aldus PageMaker 
+                including versions of Lorem Ipsum.
+                """, unsafe_allow_html=True)
+        
+        st.subheader("Contact Us")
+        st.markdown("""
+                <span style="color: red; font-weight: bold;">Our Website: </span> www.odumare....com <br> 
+                <span style="color: red; font-weight: bold;">Email: </span> info@odumaretech.com <br>
+                <span style="color: red; font-weight: bold;">Phone Number: </span> +44 56 33443 <br>
+                <span style="color: red; font-weight: bold;">Address: </span> 5, where we locate, UK street, United States <br>
+                """, unsafe_allow_html=True)
 
 
-           
+
 if __name__ == "__main__":
     main()
