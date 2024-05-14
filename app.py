@@ -129,7 +129,7 @@ def main():
     st.title("Hate Speech Detector Chatbot")
 
     # Some explanation about the app and the hate speech detection model
-    #st.markdown("This app detects whether text inputs contains hate speech or not.")
+    st.markdown("This app detects whether text inputs contains hate speech or not.")
 
     # Text input for user to enter message
     user_input = st.text_area("Enter text here:", value=state['user_input'])
