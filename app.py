@@ -231,34 +231,36 @@ def main():
     if st.session_state.about_app:
         st.subheader("About Hate Speech Detector")
         st.markdown("""
-                Lorem Ipsum is simply dummy text of the printing and typesetting industry.
-                Lorem Ipsum has been the industry's standard dummy text ever since the 1500s
-                standard dummy text ever since the 1500s, when an unknown printer took a galley of 
-                type and scrambled it to make a type specimen book. <br> It has survived not only five 
-                centuries, but also the leap into electronic typesetting, remaining essentially unchanged. <br>
-                It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum 
-                passages, <br> and more recently with desktop publishing software like Aldus PageMaker 
-                including versions of Lorem Ipsum.
+                Introducing our Hate Speech Detector app, a tool designed to combat hate speech. In today's digital age, 
+                hate speech poses a significant threat to the safety and well-being of individuals and communities, perpetuating 
+                intolerance and division. Despite ongoing efforts to address this issue, hate speech often evades detection due 
+                to its nuanced and ever-changing nature.
+
+                    
+                At the core of our app is a sophisticated machine learning model, specifically an AdaBoost algorithm, trained to 
+                identify instances of hate speech within tweets. By harnessing the power of AI, we aim to provide a means to filter 
+                out harmful content, fostering a safer and more inclusive online environment for all.
+
+                    
+                Strengths of our application include the utilization of an advanced machine learning technique, the AdaBoost algorithm, 
+                which ensures a high level of accuracy in identifying hate speech within tweets. Additionally, our user-friendly interface 
+                makes the app accessible to a wide range of users, empowering individuals from diverse backgrounds to take action against 
+                hate speech with ease.
                 """, unsafe_allow_html=True)
         
         st.subheader("Limitations")
         st.markdown("""
-                Lorem Ipsum is simply dummy text of the printing and typesetting industry.
-                Lorem Ipsum has been the industry's standard dummy text ever since the 1500s
-                standard dummy text ever since the 1500s, when an unknown printer took a galley of 
-                type and scrambled it to make a type specimen book. <br> It has survived not only five 
-                centuries, but also the leap into electronic typesetting, remaining essentially unchanged. <br>
-                It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum 
-                passages, <br> and more recently with desktop publishing software like Aldus PageMaker 
-                including versions of Lorem Ipsum.
+                However, it's important to acknowledge the limitations of our app. While our model is trained to detect a wide array of 
+                hate speech, it may not capture every instance with 100% accuracy. Furthermore, the dynamic nature of online communication
+                means that new forms of hate speech may emerge over time, requiring ongoing updates and enhancements to boost detection capabilities.
                 """, unsafe_allow_html=True)
         
         st.subheader("Collaborators")
         st.markdown("""
-                Name 1 <br>
-                Name 2 <br>
-                Name 3 <br>
-                Name 4 <br>                  
+                Ridwan Bankole <br>
+                Jacinta Muindi <br>
+                Ifeoluwa Osasona <br>
+                Samson Alfred <br>                  
                 
                 """, unsafe_allow_html=True)
         
