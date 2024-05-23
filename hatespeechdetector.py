@@ -140,7 +140,7 @@ def main():
         st.image(logo, width=200)  
         st.markdown("""
         <div style="display: flex; align-items: center;">
-            <p style="margin: 0; font-size: 10px; align-items: center;">A product from the Research and Development Department</p>
+            <p style="margin: 0; font-size: 10px; align-items: center;">A product from the Research and Innovation Department</p>
         </div>
         """, unsafe_allow_html=True)
     
